@@ -1,0 +1,705 @@
+<!doctype html>
+<title>Fleet Connector — Reference Implementation</title>
+<meta charset="utf-8">
+<style>
+  @font-face{
+    font-family:"Fraunces Display";
+    src:url(data:font/woff2;base64,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) format("woff2");
+    font-weight:600;
+    font-style:normal;
+    font-display:swap;
+  }
+
+  :root{
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --border-strong: #3c3c3c;
+    --text: #f5f5f5;
+    --text-dim: #a3a3a3;
+    --text-faint: #6e6e6e;
+    --accent: #00a5ef;
+    --accent-soft: rgba(0,165,239,0.14);
+    --accent-contrast: #ffffff;
+    --ok: #00bb7f;
+    --ok-soft: rgba(0,187,127,0.13);
+    --danger: #ff2357;
+    --danger-soft: rgba(255,35,87,0.1);
+    --shadow: rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #efefef;
+      --border: #e5e5e5;
+      --border-strong: #d1d5dc;
+      --text: #0a0a0a;
+      --text-dim: #525252;
+      --text-faint: #8a8a8a;
+      --accent: #0090c9;
+      --accent-soft: rgba(0,144,201,0.09);
+      --accent-contrast: #ffffff;
+      --ok: #04966a;
+      --ok-soft: rgba(4,150,106,0.1);
+      --danger: #d6123f;
+      --danger-soft: rgba(214,18,63,0.08);
+      --shadow: rgba(0,0,0,0.12);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #efefef;
+    --border: #e5e5e5;
+    --border-strong: #d1d5dc;
+    --text: #0a0a0a;
+    --text-dim: #525252;
+    --text-faint: #8a8a8a;
+    --accent: #0090c9;
+    --accent-soft: rgba(0,144,201,0.09);
+    --accent-contrast: #ffffff;
+    --ok: #04966a;
+    --ok-soft: rgba(4,150,106,0.1);
+    --danger: #d6123f;
+    --danger-soft: rgba(214,18,63,0.08);
+    --shadow: rgba(0,0,0,0.12);
+  }
+
+  *{box-sizing:border-box;min-width:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 500px at 15% -10%, var(--accent-soft), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    padding:0 20px 8px;
+  }
+  .wrap{max-width:800px;margin:0 auto;}
+
+  code, pre, .mono{
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", "Cascadia Mono", Consolas, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1, h2.display{
+    font-family:"Fraunces Display", ui-serif, Georgia, serif;
+    font-weight:600;
+  }
+
+  /* ---- header ---- */
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:26px 0 18px;
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:-0.01em;
+    color:var(--text);
+  }
+  .wordmark .seal{flex:none;color:var(--accent);}
+  .kit-label{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    border:1px solid var(--border-strong);
+    border-radius:999px;
+    padding:5px 11px;
+  }
+
+  /* ---- hero ---- */
+  .intro{padding:40px 0 6px;}
+  .eyebrow{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+    flex:none;
+  }
+  h1{
+    font-size:clamp(28px,4.4vw,42px);
+    line-height:1.1;
+    letter-spacing:-0.01em;
+    margin:0 0 16px;
+    text-wrap:balance;
+    color:var(--text);
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--accent);
+  }
+  .lede{
+    color:var(--text-dim);
+    font-size:16.5px;
+    margin:0 0 6px;
+  }
+  .lede strong{color:var(--text);font-weight:600;}
+
+  section{padding:18px 0;}
+  section > .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin:0 0 20px;
+  }
+  section > .section-head h2{
+    font-size:12.5px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-weight:600;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin:0;
+    white-space:nowrap;
+  }
+  section > .section-head::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--border);
+    transform:translateY(1px);
+  }
+  section > .section-sub{
+    color:var(--text-dim);
+    font-size:14.5px;
+    margin:-10px 0 20px;
+  }
+
+  h3{font-size:19px;margin:0 0 8px;letter-spacing:-0.005em;font-weight:650;}
+  p{color:var(--text-dim);margin:0 0 12px;}
+  a{color:var(--text);text-decoration-color:var(--border-strong);}
+  a:hover{text-decoration:underline;}
+  a:focus-visible, button:focus-visible, summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .mono-inline{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:0.92em;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 5px;
+    color:var(--text);
+  }
+
+  /* ---- platform cards ---- */
+  .cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:0 0 20px;
+  }
+  .cards.cols-3{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:640px){ .cards{grid-template-columns:1fr;} .cards.cols-3{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    box-shadow:0 1px 2px var(--shadow);
+  }
+  .card-head{display:flex;align-items:center;gap:11px;}
+  .os-badge{
+    width:36px;height:36px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    flex:none;
+  }
+  .card-head .name{font-weight:650;font-size:16px;}
+  .card-head .sub{
+    display:block;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:12px;
+    color:var(--text-faint);
+    margin-top:1px;
+  }
+  .card p{font-size:14.5px;margin:0;}
+
+  /* ---- code blocks ---- */
+  .codeblock{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    margin:0 0 14px;
+    box-shadow:0 1px 2px var(--shadow);
+  }
+  .codeblock .bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 12px;
+    border-bottom:1px solid var(--border);
+    background:var(--surface-2);
+    gap:10px;
+  }
+  .codeblock .bar .label{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:12px;
+    color:var(--text-faint);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .codeblock pre{
+    margin:0;
+    padding:14px 16px;
+    overflow-x:auto;
+    font-size:13px;
+    line-height:1.65;
+    color:var(--text);
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .codeblock pre .c1{color:var(--text-faint);}
+  .codeblock pre .c2{color:var(--accent);}
+  .codeblock pre .c3{color:var(--ok);}
+
+  .copy-btn{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:11.5px;
+    color:var(--text-dim);
+    background:transparent;
+    border:1px solid var(--border-strong);
+    border-radius:6px;
+    padding:4px 9px;
+    cursor:pointer;
+    flex:none;
+  }
+  .copy-btn:hover{border-color:var(--accent);color:var(--text);}
+  .copy-btn.copied{border-color:var(--ok);color:var(--ok);}
+
+  /* ---- collapsible reference ---- */
+  details.ref{
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface);
+    overflow:hidden;
+    margin:0 0 20px;
+  }
+  details.ref + details.ref{margin-top:12px;}
+  details.ref summary{
+    list-style:none;
+    cursor:pointer;
+    padding:13px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background:var(--surface-2);
+  }
+  details.ref summary::-webkit-details-marker{display:none;}
+  details.ref summary .s-left{
+    display:flex;align-items:center;gap:10px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:13px;color:var(--text);
+    overflow:hidden;
+  }
+  details.ref summary .chev{
+    color:var(--accent);
+    transition:transform .15s ease;
+    flex:none;
+  }
+  details.ref[open] summary .chev{transform:rotate(90deg);}
+  details.ref .body{padding:0;}
+  details.ref pre{
+    margin:0;padding:16px;
+    max-height:460px;overflow:auto;
+    font-size:12.5px;line-height:1.7;
+  }
+  .taglabel{color:var(--text-faint);font-size:12px;flex:none;}
+
+  ul.checklist{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:7px;}
+  ul.checklist li{
+    font-size:14.5px;color:var(--text-dim);
+    padding-left:22px;position:relative;
+  }
+  ul.checklist li::before{
+    content:"";
+    position:absolute;left:0;top:8px;
+    width:5px;height:5px;border-radius:50%;
+    background:var(--accent);
+  }
+
+  .note{
+    display:flex;gap:11px;
+    background:var(--ok-soft);
+    border:1px solid var(--border-strong);
+    border-radius:9px;
+    padding:13px 15px;
+    font-size:13.5px;
+    color:var(--text);
+    margin-top:16px;
+  }
+  .note.warn{
+    background:var(--danger-soft);
+    border-color:var(--danger);
+  }
+  .note svg{flex:none;margin-top:1px;color:var(--ok);}
+  .note.warn svg{color:var(--danger);}
+
+  .cmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){ .cmd-grid{grid-template-columns:1fr;} }
+  .cmd-col .os-label{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--text-faint);margin-bottom:8px;
+  }
+
+  footer{padding:30px 0 44px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  footer .fine{font-size:12.5px;color:var(--text-faint);}
+  footer .fine a{color:var(--text-faint);text-decoration:underline;}
+  footer .wordmark{font-size:14px;}
+  footer .seal{width:14px;height:14px;}
+
+  ::selection{background:var(--accent-soft);color:var(--text);}
+
+  @media (prefers-reduced-motion: reduce){
+    .copy-btn, details.ref summary .chev{transition:none;}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="wordmark">
+      <svg class="seal" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M8.2 12.3l2.4 2.4 5.2-5.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Fleet Connector
+    </div>
+    <span class="kit-label">Reference Implementation</span>
+  </header>
+
+  <div class="intro">
+    <h1>Ship the ngrok agent under <em>your</em> brand and <em>your</em> signature.</h1>
+    <p class="lede">
+      Fleet Connector turns <span class="mono-inline">golang.ngrok.com/ngrok/v2</span> into a service you own
+      end to end. You control the binary name, the code-signing certificate, the installer, and the update
+      channel. Configure each deployment the way it needs: a scripted silent install, an interactive setup
+      wizard, or a config file you manage by hand. Then push a new signed build the moment you trigger one.
+    </p>
+  </div>
+
+  <section id="fork">
+    <div class="section-head"><h2>1. Fork the repo</h2></div>
+    <p class="section-sub">This is a reference implementation meant to be renamed and re-signed as your own,
+      not installed as-is.</p>
+    <p><a href="https://github.com/ngrok-adhoc/fleet-connector/fork" target="_blank" rel="noopener">Fork
+      the repo</a> before doing anything else. Your service name, wordmark, and signing certificate will live
+      in a copy you control, not in this one.</p>
+  </section>
+
+  <section id="build">
+    <div class="section-head"><h2>2. Build your release</h2></div>
+    <p class="section-sub">A one-time step on your own build machine. It doesn't run on every install. The
+      output is a signed installer you distribute.</p>
+    <p>Clone your fork, then build either package below.</p>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-head">
+          <div class="os-badge">
+            <svg viewBox="0 0 100 100" width="18" height="18" fill="currentColor"><path d="M4.6 18.1L37.6 11.6L37.6 48L4.6 48ZM42.5 10.6L95.4 0.1L95.4 48L42.5 48ZM4.6 52L37.6 52L37.6 88.5L4.6 82ZM42.5 52L95.4 52L95.4 99.9L42.5 89.5Z"/></svg>
+          </div>
+          <div>
+            <div class="name">Windows</div>
+            <span class="sub">fleetconnect.exe &middot; MSI (WiX v5)</span>
+          </div>
+        </div>
+        <p>Builds a signed installer that registers a Windows service, starting on boot under LocalSystem.</p>
+        <div class="codeblock" style="margin-bottom:0;">
+          <div class="bar"><span class="label">PowerShell</span><button class="copy-btn" data-copy-target="build-win">Copy</button></div>
+          <pre id="build-win">git clone https://github.com/&lt;your-org&gt;/fleet-connector.git
+cd fleet-connector
+go build -o fleetconnect.exe .\cmd\fleetconnect
+
+dotnet tool install --global wix --version "5.*"
+wix extension add WixToolset.Util.wixext/5.0.2
+wix build installer\product.wxs `
+  -ext WixToolset.Util.wixext/5.0.2 -arch x64 `
+  -d FleetConnectExeSource=fleetconnect.exe `
+  -out FleetConnector.msi</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="os-badge">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></svg>
+          </div>
+          <div>
+            <div class="name">Linux</div>
+            <span class="sub">fleetconnect &middot; systemd &middot; .deb / .rpm</span>
+          </div>
+        </div>
+        <p>Packages a systemd unit alongside the binary, via <span class="mono-inline">nfpm</span>.</p>
+        <div class="codeblock" style="margin-bottom:0;">
+          <div class="bar"><span class="label">shell</span><button class="copy-btn" data-copy-target="build-linux">Copy</button></div>
+          <pre id="build-linux">git clone https://github.com/&lt;your-org&gt;/fleet-connector.git
+cd fleet-connector
+GOOS=linux GOARCH=amd64 go build -o fleetconnect ./cmd/fleetconnect
+
+go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+nfpm package --config installer/linux/nfpm.yaml \
+  --packager deb --target dist/</pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="section-head"><h2>3. Install</h2></div>
+    <p class="section-sub">What actually reaches a target machine: the installer from the step above.</p>
+    <div class="cmd-grid">
+      <div class="cmd-col">
+        <div class="os-label">Windows</div>
+        <div class="codeblock">
+          <div class="bar"><span class="label">PowerShell (Administrator)</span><button class="copy-btn" data-copy-target="install-win">Copy</button></div>
+          <pre id="install-win">msiexec /i FleetConnector.msi /quiet</pre>
+        </div>
+      </div>
+      <div class="cmd-col">
+        <div class="os-label">Linux</div>
+        <div class="codeblock">
+          <div class="bar"><span class="label">terminal</span><button class="copy-btn" data-copy-target="install-linux">Copy</button></div>
+          <pre id="install-linux">sudo dpkg -i fleetconnect_*.deb</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="configure">
+    <div class="section-head"><h2>4. Configure</h2></div>
+    <p class="section-sub">Three ways to reach the same config.yaml, chosen by who's doing the install and when.</p>
+
+    <div class="cards cols-3">
+      <div class="card">
+        <h3 style="font-size:15.5px;">gen-config</h3>
+        <p>Pre-stage config.yaml before the service ever starts. Scripted and silent, built for an RMM
+          pushing to a fleet of machines at once.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15.5px;">Setup wizard</h3>
+        <p>No config.yaml at first start? The service opens a local-only (127.0.0.1) web form, walks a person
+          through it once, then shuts itself down the moment a valid config is written.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15.5px;">Hand-edit</h3>
+        <p>Already deployed and need to change something? Edit config.yaml directly, or run
+          <span class="mono-inline">fleetconnect edit-config</span> to do it in $EDITOR with validation before it saves.</p>
+      </div>
+    </div>
+
+    <p><span class="mono-inline">gen-config</span> example, pre-staging a full first-boot config including remote updates:</p>
+
+    <div class="codeblock">
+      <div class="bar"><span class="label">gen-config</span><button class="copy-btn" data-copy-target="genconfig-cmd">Copy</button></div>
+      <pre id="genconfig-cmd">./fleetconnect gen-config \
+  --description "store-042" \
+  --upstream localhost:8080 \
+  --authtoken "&lt;your authtoken&gt;" \
+  --update-source-url "https://updates.example.com/latest/fleetconnect.msi" \
+  --update-signer-thumbprint "AABBCCDDEEFF00112233445566778899AABBCCDD"</pre>
+    </div>
+
+    <details class="ref">
+      <summary>
+        <span class="s-left"><span class="chev">&#9656;</span> <span>gen-config flags</span></span>
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="taglabel">full reference</span>
+        </span>
+      </summary>
+      <div class="body"><pre>--description              human-readable description (required)
+--upstream                 single-endpoint shorthand, e.g. localhost:8080
+--authtoken                literal value, "env:VAR", or "file:PATH";
+                            omit to mint a fresh credential via the API
+--connect-url               custom/dedicated ngrok connect endpoint
+--connect-ca-cert-file       PEM CA bundle to trust for --connect-url
+--proxy-url                 outbound HTTP/SOCKS proxy for the agent's own connection
+--heartbeat-interval         connection heartbeat interval, e.g. 30s
+--heartbeat-tolerance         how long a missed heartbeat is tolerated, e.g. 1m
+--update-source-url          Windows only; blank disables self-update
+--update-signer-thumbprint    required whenever --update-source-url is set
+--endpoint                   repeatable, for multi-endpoint installs</pre></div>
+    </details>
+
+    <p>What it writes:</p>
+    <div class="codeblock">
+      <div class="bar"><span class="label">config.yaml</span><button class="copy-btn" data-copy-target="config-yaml">Copy</button></div>
+      <pre id="config-yaml">schema_version: 1
+description: store-042
+credential:
+    provider: static
+    params:
+        authtoken: &lt;your authtoken&gt;
+endpoints:
+    - upstream:
+        url: localhost:8080
+update_source_url: https://updates.example.com/latest/fleetconnect.msi
+update_signer_thumbprint: AABBCCDDEEFF00112233445566778899AABBCCDD</pre>
+    </div>
+
+    <details class="ref">
+      <summary>
+        <span class="s-left"><span class="chev">&#9656;</span> <span>config.yaml reference</span></span>
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="taglabel">full schema</span>
+        </span>
+      </summary>
+      <div class="body"><pre>schema_version               required, must be 1
+description                  human-readable label (optional)
+metadata                     opaque, dashboard/API-visible session metadata (optional)
+credential:
+  provider                    required — "static" is the only built-in provider
+  params:                      map of strings — open-ended, but static only reads one key
+    authtoken                    the only key the static provider reads
+endpoints:                   list, one entry per tunnel (optional)
+  - name                        friendly name (optional)
+    url                         endpoint URL; blank = https, or tcp://, tls://
+    upstream:
+      url                         required — local address to forward to
+      protocol                    "http1" (default) or "http2"
+      proxy_protocol              "1", "2", or empty
+      tls_verify                  verify the upstream's TLS cert (default: false)
+      tls_verify_cas              PEM CA bundle path; empty = system CA pool
+    bindings                    e.g. ["public"] or ["internal"] (optional)
+    metadata                    opaque per-endpoint metadata (optional)
+    description                 per-endpoint description (optional)
+    traffic_policy              inline traffic policy, YAML or JSON string (optional)
+    agent_tls_termination:      (optional)
+      server_certificate          PEM certificate
+      server_private_key          PEM private key
+      mutual_tls_certificate_authorities   PEM CA bundle (optional)
+    pooling_enabled              bool (optional)
+connect_url                  custom/dedicated ngrok connect endpoint (optional)
+connect_ca_cert_file         PEM CA bundle to trust for connect_url (optional)
+proxy_url                    outbound HTTP/SOCKS proxy for the agent's own connection (optional)
+heartbeat_interval            e.g. "30s" (optional)
+heartbeat_tolerance            e.g. "1m" (optional)
+log_level                    debug, info (default), warn, or error
+update_source_url            Windows only; blank disables self-update
+update_signer_thumbprint     required whenever update_source_url is set</pre></div>
+    </details>
+  </section>
+
+  <section id="updates">
+    <div class="section-head"><h2>Remote updates</h2></div>
+
+    <ul class="checklist">
+      <li><span class="mono-inline">update_source_url</span>: where the agent downloads a new signed installer from.</li>
+      <li><span class="mono-inline">update_signer_thumbprint</span>: the certificate that must have signed it.</li>
+    </ul>
+
+    <p>Set both (Configure, step 4) to turn it on. When ngrok's dashboard or API sends an update trigger over
+      the agent's existing tunnel session, it downloads the installer and checks its signature against the
+      pinned thumbprint.</p>
+  </section>
+
+  <section id="operate">
+    <div class="section-head"><h2>Operating the service</h2></div>
+    <div class="cmd-grid">
+      <div class="cmd-col">
+        <div class="os-label">Windows</div>
+        <div class="codeblock">
+          <div class="bar"><span class="label">PowerShell</span><button class="copy-btn" data-copy-target="ops-win">Copy</button></div>
+          <pre id="ops-win">sc.exe query FleetConnector
+sc.exe stop FleetConnector
+sc.exe start FleetConnector
+
+Get-Content `
+  C:\ProgramData\FleetConnector\logs\fleetconnect.log `
+  -Tail 20 -Wait</pre>
+        </div>
+      </div>
+      <div class="cmd-col">
+        <div class="os-label">Linux</div>
+        <div class="codeblock">
+          <div class="bar"><span class="label">terminal</span><button class="copy-btn" data-copy-target="ops-linux">Copy</button></div>
+          <pre id="ops-linux">systemctl status fleetconnect
+systemctl stop fleetconnect
+systemctl start fleetconnect
+
+journalctl -u fleetconnect -f</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wordmark">
+      <svg class="seal" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 12.3l2.4 2.4 5.2-5.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Fleet Connector
+    </div>
+    <div class="fine">A reference implementation on <a href="https://ngrok.com" target="_blank" rel="noopener">ngrok</a>'s Go SDK &middot; MIT licensed</div>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('[data-copy-target]').forEach(function(btn){
+    var originalLabel = btn.textContent;
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-copy-target');
+      var el = document.getElementById(id);
+      if(!el) return;
+      var text = el.textContent;
+      var done = function(){
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = originalLabel; btn.classList.remove('copied'); }, 1600);
+      };
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+      } else {
+        fallbackCopy(text); done();
+      }
+    });
+  });
+
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+</script>
