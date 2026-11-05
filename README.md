@@ -136,10 +136,12 @@ as a comma-separated `key=value` list. This is mutually exclusive with the
   --endpoint "name=pos-2,upstream.url=localhost:8081"
 ```
 
-Each `--endpoint` value only supports three keys — `name`, `upstream.url`
-(required), and `url` (optional). Anything beyond that (bindings, traffic
-policy, agent TLS termination) means hand-editing the generated file
-afterward, or using the wizard instead, which exposes the full schema.
+Each `--endpoint` value supports four keys — `name`, `upstream.url`
+(required), `url` (optional), and `bindings` (optional: `public` (default),
+`internal`, or `kubernetes`). The single-endpoint shorthand takes the same
+choice as `--binding`. Anything beyond that (traffic policy, agent TLS
+termination) means hand-editing the generated file afterward, or using the
+wizard instead, which exposes the full schema.
 
 **Other useful flags:**
 

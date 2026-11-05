@@ -10,6 +10,7 @@ import (
 	"math/big"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 
@@ -173,5 +174,72 @@ func TestGenConfigUpdateSourceURLRequiresThumbprint(t *testing.T) {
 	})
 	if err == nil {
 		t.Fatal("expected an error when --update-source-url is set without --update-signer-thumbprint")
+	}
+}
+
+// TestGenConfigBindings covers --binding and the --endpoint bindings key —
+// previously gen-config had no way to set bindings, so every generated
+// endpoint was public unless the file was hand-edited afterward.
+func TestGenConfigBindings(t *testing.T) {
+	outPath := filepath.Join(t.TempDir(), "config.yaml")
+
+	err := runGenConfig([]string{
+		"--path", outPath,
+		"--description", "bindings",
+		"--authtoken", "fake_token_gen_config",
+		"--endpoint", "name=a,upstream.url=localhost:8080,bindings=internal",
+		"--endpoint", "name=b,upstream.url=localhost:8081,bindings=kubernetes",
+		"--endpoint", "name=c,upstream.url=localhost:8082,bindings=public",
+	})
+	if err != nil {
+		t.Fatalf("runGenConfig: %v", err)
+	}
+
+	cfg, err := local.New(outPath).Load(t.Context())
+	if err != nil {
+		t.Fatalf("load written config: %v", err)
+	}
+	want := [][]string{{"internal"}, {"kubernetes"}, nil}
+	for i, ep := range cfg.Endpoints {
+		if !slices.Equal(ep.Bindings, want[i]) {
+			t.Errorf("endpoint %d bindings = %v, want %v", i, ep.Bindings, want[i])
+		}
+	}
+
+	shortPath := filepath.Join(t.TempDir(), "config.yaml")
+	err = runGenConfig([]string{
+		"--path", shortPath,
+		"--description", "bindings-shorthand",
+		"--authtoken", "fake_token_gen_config",
+		"--upstream", "localhost:8080",
+		"--binding", "internal",
+	})
+	if err != nil {
+		t.Fatalf("runGenConfig shorthand: %v", err)
+	}
+	cfg, err = local.New(shortPath).Load(t.Context())
+	if err != nil {
+		t.Fatalf("load written config: %v", err)
+	}
+	if !slices.Equal(cfg.Endpoints[0].Bindings, []string{"internal"}) {
+		t.Errorf("shorthand bindings = %v, want [internal]", cfg.Endpoints[0].Bindings)
+	}
+}
+
+// TestGenConfigBindingsRejectsUnknown confirms a typo'd binding fails at
+// gen-config time instead of producing a config the agent rejects later.
+func TestGenConfigBindingsRejectsUnknown(t *testing.T) {
+	for _, args := range [][]string{
+		{"--upstream", "localhost:8080", "--binding", "private"},
+		{"--endpoint", "upstream.url=localhost:8080,bindings=private"},
+	} {
+		err := runGenConfig(append([]string{
+			"--path", filepath.Join(t.TempDir(), "config.yaml"),
+			"--description", "bad-binding",
+			"--authtoken", "fake_token_gen_config",
+		}, args...))
+		if err == nil {
+			t.Errorf("runGenConfig(%v): expected error for unknown binding", args)
+		}
 	}
 }
