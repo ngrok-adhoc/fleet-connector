@@ -40,15 +40,16 @@ func runGenConfig(args []string) error {
 	upstream := fs.String("upstream", "", "single-endpoint shorthand: upstream address, e.g. localhost:8080 (mutually exclusive with --endpoint)")
 	name := fs.String("name", "", "single-endpoint shorthand: endpoint name")
 	url := fs.String("url", "", "single-endpoint shorthand: endpoint URL (blank for https, or tcp://, tls://)")
+	binding := fs.String("binding", "", "single-endpoint shorthand: endpoint binding, one of public (default), internal, or kubernetes")
 
 	// Repeatable multi-endpoint flag — for installs with more than one
 	// tunnel. Each occurrence is "key=value,key=value", keys: name,
-	// upstream (required), url. Only these three fields are exposed here;
-	// anything more elaborate per-endpoint (traffic_policy, bindings,
+	// upstream.url (required), url, bindings. Only these four fields are
+	// exposed here; anything more elaborate per-endpoint (traffic_policy,
 	// agent_tls_termination) means hand-editing the generated file
 	// afterward, or authoring it directly (§6).
 	var endpointFlags repeatedFlag
-	fs.Var(&endpointFlags, "endpoint", `one endpoint, as "name=...,upstream.url=...,url=..." (upstream.url required, name/url optional) — key names match config.yaml's own nesting. Repeat for multiple endpoints, e.g. --endpoint "name=pos-1,upstream.url=localhost:8080" --endpoint "name=pos-2,upstream.url=localhost:8081". Mutually exclusive with --name/--upstream/--url.`)
+	fs.Var(&endpointFlags, "endpoint", `one endpoint, as "name=...,upstream.url=...,url=...,bindings=..." (upstream.url required, name/url/bindings optional; bindings is one of public, internal, or kubernetes) — key names match config.yaml's own nesting. Repeat for multiple endpoints, e.g. --endpoint "name=pos-1,upstream.url=localhost:8080" --endpoint "name=pos-2,upstream.url=localhost:8081". Mutually exclusive with --name/--upstream/--url/--binding.`)
 
 	if err := fs.Parse(args); err != nil {
 		return err
@@ -58,7 +59,7 @@ func runGenConfig(args []string) error {
 		return errors.New("--description is required")
 	}
 
-	endpoints, err := resolveEndpoints(endpointFlags, *name, *upstream, *url)
+	endpoints, err := resolveEndpoints(endpointFlags, *name, *upstream, *url, *binding)
 	if err != nil {
 		return err
 	}
@@ -89,10 +90,10 @@ func runGenConfig(args []string) error {
 // used — the single-endpoint shorthand or one-or-more --endpoint entries —
 // and rejects mixing both, since precedence between them would be
 // ambiguous rather than a sensible default.
-func resolveEndpoints(endpointFlags repeatedFlag, name, upstream, url string) ([]config.Endpoint, error) {
-	shorthandUsed := name != "" || upstream != "" || url != ""
+func resolveEndpoints(endpointFlags repeatedFlag, name, upstream, url, binding string) ([]config.Endpoint, error) {
+	shorthandUsed := name != "" || upstream != "" || url != "" || binding != ""
 	if shorthandUsed && len(endpointFlags) > 0 {
-		return nil, errors.New("use either --endpoint or --name/--upstream/--url, not both")
+		return nil, errors.New("use either --endpoint or --name/--upstream/--url/--binding, not both")
 	}
 
 	if len(endpointFlags) > 0 {
@@ -110,10 +111,28 @@ func resolveEndpoints(endpointFlags repeatedFlag, name, upstream, url string) ([
 	if upstream == "" {
 		return nil, errors.New("--upstream is required (or use one or more --endpoint instead)")
 	}
-	return []config.Endpoint{{Name: name, Upstream: config.Upstream{URL: upstream}, URL: url}}, nil
+	bindings, err := parseBinding(binding)
+	if err != nil {
+		return nil, fmt.Errorf("--binding: %w", err)
+	}
+	return []config.Endpoint{{Name: name, Upstream: config.Upstream{URL: upstream}, URL: url, Bindings: bindings}}, nil
 }
 
-// parseEndpointFlag parses "name=...,upstream=...,url=..." into an Endpoint.
+// parseBinding validates a binding against the same three choices the
+// wizard offers. "public" is the endpoint's own default binding, so like
+// the wizard it leaves Bindings unset rather than writing it out.
+func parseBinding(binding string) ([]string, error) {
+	switch binding {
+	case "", "public":
+		return nil, nil
+	case "internal", "kubernetes":
+		return []string{binding}, nil
+	default:
+		return nil, fmt.Errorf("unknown binding %q (want public, internal, or kubernetes)", binding)
+	}
+}
+
+// parseEndpointFlag parses "name=...,upstream.url=...,url=...,bindings=..." into an Endpoint.
 func parseEndpointFlag(spec string) (config.Endpoint, error) {
 	var ep config.Endpoint
 	for _, pair := range strings.Split(spec, ",") {
@@ -128,8 +147,14 @@ func parseEndpointFlag(spec string) (config.Endpoint, error) {
 			ep.Upstream.URL = value
 		case "url":
 			ep.URL = value
+		case "bindings":
+			bindings, err := parseBinding(value)
+			if err != nil {
+				return config.Endpoint{}, err
+			}
+			ep.Bindings = bindings
 		default:
-			return config.Endpoint{}, fmt.Errorf("unknown key %q (want name, upstream.url, or url)", key)
+			return config.Endpoint{}, fmt.Errorf("unknown key %q (want name, upstream.url, url, or bindings)", key)
 		}
 	}
 	if ep.Upstream.URL == "" {
