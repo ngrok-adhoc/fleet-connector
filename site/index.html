@@ -591,6 +591,7 @@ nfpm package --config installer/linux/nfpm.yaml \
       </summary>
       <div class="body"><pre>--description              human-readable description (required)
 --upstream                 single-endpoint shorthand, e.g. localhost:8080
+--binding                  single-endpoint shorthand: public (default), internal, or kubernetes
 --authtoken                literal value, "env:VAR", or "file:PATH";
                             omit to mint a fresh credential via the API
 --connect-url               custom/dedicated ngrok connect endpoint
@@ -600,7 +601,8 @@ nfpm package --config installer/linux/nfpm.yaml \
 --heartbeat-tolerance         how long a missed heartbeat is tolerated, e.g. 1m
 --update-source-url          Windows only; blank disables self-update
 --update-signer-thumbprint    required whenever --update-source-url is set
---endpoint                   repeatable, for multi-endpoint installs</pre></div>
+--endpoint                   repeatable, for multi-endpoint installs:
+                            "name=...,upstream.url=...,url=...,bindings=internal"</pre></div>
     </details>
 
     <p>What it writes:</p>
